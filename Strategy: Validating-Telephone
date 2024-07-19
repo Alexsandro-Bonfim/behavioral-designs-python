@@ -1,0 +1,53 @@
+"""
+We need to validate phone numbers from different countries. Each country may have a different format for phone numbers,
+and we will encapsulate these validation rules using the Strategy pattern.
+""
+from abc import ABC, abstractmethod
+import re
+
+class PhoneValidationStrategy(ABC):
+    @abstractmethod
+    def validate(self, phone_number: str) -> bool:
+        pass
+
+class USPhoneValidation(PhoneValidationStrategy):
+    def validate(self, phone_number: str) -> bool:
+        # Exemplo simplificado de regex para números de telefone dos EUA
+        pattern = re.compile(r'^\+1\d{10}$')
+        return bool(pattern.match(phone_number))
+
+class BRPhoneValidation(PhoneValidationStrategy):
+    def validate(self, phone_number: str) -> bool:
+        # Exemplo simplificado de regex para números de telefone do Brasil
+        pattern = re.compile(r'^\+55\d{11}$')
+        return bool(pattern.match(phone_number))
+
+class FRPhoneValidation(PhoneValidationStrategy):
+    def validate(self, phone_number: str) -> bool:
+        # Exemplo simplificado de regex para números de telefone da França
+        pattern = re.compile(r'^\+33\d{9}$')
+        return bool(pattern.match(phone_number))
+        
+class PhoneNumberValidator:
+    def __init__(self, strategy: PhoneValidationStrategy):
+        self.strategy = strategy
+
+    def validate(self, phone_number: str) -> bool:
+        return self.strategy.validate(phone_number)
+
+def main():
+    phone_number_us = "+11234567890"
+    phone_number_br = "+5512345678901"
+    phone_number_fr = "+33123456789"
+
+    us_validator = PhoneNumberValidator(USPhoneValidation())
+    br_validator = PhoneNumberValidator(BRPhoneValidation())
+    fr_validator = PhoneNumberValidator(FRPhoneValidation())
+
+    print("US Phone Number Valid:", us_validator.validate(phone_number_us))  # Output: True
+    print("BR Phone Number Valid:", br_validator.validate(phone_number_br))  # Output: True
+    print("FR Phone Number Valid:", fr_validator.validate(phone_number_fr))  # Output: True
+
+if __name__ == "__main__":
+    main()
+
