@@ -1,0 +1,52 @@
+# Observer Pattern in Python
+
+class Observador:
+    def atualizar(self, mensagem):
+        pass
+
+class Cliente(Observador):
+    def __init__(self, nome):
+        self.nome = nome
+
+    def atualizar(self, mensagem):
+        print(f"Cliente {self.nome} recebeu a atualização: {mensagem}")
+
+class Concessionaria:
+    def __init__(self):
+        self._observadores = []
+        self._carros = []
+        self._precos = {}
+
+    def adicionar_observador(self, observador):
+        if observador not in self._observadores:
+            self._observadores.append(observador)
+
+    def remover_observador(self, observador):
+        if observador in self._observadores:
+            self._observadores.remove(observador)
+
+    def notificar_observadores(self, mensagem):
+        for observador in self._observadores:
+            observador.atualizar(mensagem)
+
+    def adicionar_carro(self, modelo, preco):
+        self._carros.append(modelo)
+        self._precos[modelo] = preco
+        self.notificar_observadores(f"Novo modelo de carro disponível: {modelo} com preço {preco}")
+
+    def atualizar_preco(self, modelo, novo_preco):
+        if modelo in self._precos:
+            self._precos[modelo] = novo_preco
+            self.notificar_observadores(f"O preço do modelo {modelo} foi atualizado para {novo_preco}")
+
+# Testando o padrão Observer
+concessionaria = Concessionaria()
+
+cliente1 = Cliente("Donatello")
+cliente2 = Cliente("Lilian")
+
+concessionaria.adicionar_observador(cliente1)
+concessionaria.adicionar_observador(cliente2)
+
+concessionaria.adicionar_carro("Fusca", 25000)
+concessionaria.atualizar_preco("Fusca", 23000)
